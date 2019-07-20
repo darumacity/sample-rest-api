@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "main": "app.js",
   "dependencies": {
+    "basic-auth": "^2.0.1",
     "express": "^4.17.1",
     "swagger-ui-express": "^4.0.7",
     "yamljs": "^0.3.0"

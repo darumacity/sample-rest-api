@@ -1,9 +1,11 @@
 openapi: 3.0.0
 servers:
+  - description: AWS Environment
+    url: http://3.112.47.159/api
   - description: SwaggerHub API Auto Mocking
     url: https://virtserver.swaggerhub.com/darumacity/sample-rest-api/0.0.1
-  - description: AWS Environment
-    url: http://3.112.47.159/api/
+  - description: Local Environment
+    url: http://localhost:3000
 info:
   description: This is a sample REST API
   version: "0.0.1"
@@ -16,7 +18,8 @@ tags:
   - name: developers
     description: Operations available to regular developers
 security:
-  - ApiKeyAuth: []
+  - BasicAuth: []
+    TokenAuth: []
 paths:
   /inventory:
     get:
@@ -59,7 +62,9 @@ paths:
                 items:
                   $ref: '#/components/schemas/InventoryItem'
         '400':
-          description: bad input parameter
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
     post:
       tags:
         - admins
@@ -70,7 +75,9 @@ paths:
         '201':
           description: item created
         '400':
-          description: 'invalid input, object invalid'
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
         '409':
           description: an existing item already exists
       requestBody:
@@ -117,8 +124,18 @@ components:
           type: string
           example: 408-867-5309
       type: object
+  responses:
+    BadRequestError:
+      description: Input parameter is invalid
+    UnauthorizedError:
+      description: Authentication information is missing or invalid
   securitySchemes:
-    ApiKeyAuth:
-      type: apiKey
-      in: header
-      name: Authorization
+    BasicAuth:
+      description: For using test and production
+      type: http
+      scheme: basic
+    TokenAuth:
+      description: For using a mock
+      type: "apiKey"
+      name: "Authorization"
+      in: "header"
